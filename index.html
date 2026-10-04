@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Love Garden</title>
+  <title>Love Garden - Premium Edition</title>
   <style>
     :root {
       --bg1: #fff4f7;
@@ -18,6 +18,7 @@
       --match: #b5f1d4;
       --danger: #f06b8d;
       --gold: #ffd970;
+      --purple: #d4a5d4;
     }
 
     * {
@@ -35,11 +36,17 @@
         radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 36%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
       overflow: hidden;
+      padding: 10px;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 900px;
     }
 
     .scene {
       position: relative;
-      width: min(92vw, 760px);
+      width: 100%;
       background: var(--panel);
       border: 1px solid rgba(255,255,255,0.7);
       backdrop-filter: blur(8px);
@@ -53,7 +60,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
     }
 
@@ -65,9 +72,9 @@
       text-shadow: 0 4px 12px rgba(255, 92, 138, 0.12);
     }
 
-    .controls {
+    .stats-bar {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -80,18 +87,46 @@
       font-size: 0.95rem;
       font-weight: 700;
       box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+      white-space: nowrap;
     }
 
-    .timer {
-      min-width: 120px;
-      text-align: center;
-      color: var(--danger);
+    .pill.gold {
+      background: linear-gradient(135deg, var(--gold), #ffed4e);
+      color: #8b6f00;
+      border-color: rgba(255, 217, 112, 0.6);
     }
 
-    .board-wrap {
-      position: relative;
+    .game-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
+    .tab-btn {
+      background: rgba(255,255,255,0.5);
+      border: 2px solid rgba(255,255,255,0.7);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent), #ff8aa7);
+      color: white;
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .tab-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* MEMORY GAME STYLES */
     .game-board {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -170,16 +205,191 @@
       border-color: rgba(126, 214, 163, 0.8);
     }
 
-    .card:disabled {
-      cursor: default;
+    /* SLOTS GAME STYLES */
+    .slots-container {
+      text-align: center;
+      padding: 20px 0;
     }
 
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .slot {
+      width: 100px;
+      height: 140px;
+      background: linear-gradient(180deg, #fff8ff, #ffebf0);
+      border: 3px solid var(--accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      font-weight: bold;
+      box-shadow: 0 10px 30px rgba(255, 92, 138, 0.2), inset 0 2px 8px rgba(255, 255, 255, 0.8);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slot.spinning {
+      animation: spin 0.3s ease-in-out;
+    }
+
+    @keyframes spin {
+      0% { transform: rotateX(0deg); }
+      50% { transform: rotateX(180deg); }
+      100% { transform: rotateX(360deg); }
+    }
+
+    .slot-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .spin-btn {
+      background: linear-gradient(135deg, var(--accent), #ff8c5d);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(255, 106, 146, 0.3);
+      transition: all 0.3s ease;
+      margin-top: 16px;
+    }
+
+    .spin-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(255, 106, 146, 0.4);
+    }
+
+    .spin-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .slot-result {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-top: 16px;
+      min-height: 30px;
+      color: var(--accent);
+    }
+
+    /* QUICK CLICK GAME STYLES */
+    .click-game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .click-target {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--gold), #ffed4e);
+      border: 3px solid #cc7f00;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 10px 30px rgba(255, 217, 112, 0.3);
+      transition: all 0.1s ease;
+      user-select: none;
+    }
+
+    .click-target:hover {
+      transform: scale(1.1);
+    }
+
+    .click-target.pulse {
+      animation: pulse-anim 0.3s ease;
+    }
+
+    @keyframes pulse-anim {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .click-stats {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 16px;
+    }
+
+    /* QUIZ GAME STYLES */
+    .quiz-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .quiz-question {
+      background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));
+      border: 2px solid rgba(255, 150, 180, 0.3);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .quiz-question h3 {
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .quiz-btn {
+      background: rgba(255,255,255,0.6);
+      border: 2px solid rgba(255, 150, 180, 0.4);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--text);
+    }
+
+    .quiz-btn:hover:not(:disabled) {
+      background: rgba(255,255,255,0.9);
+      transform: translateX(4px);
+    }
+
+    .quiz-btn.correct {
+      background: linear-gradient(135deg, #b5f1d4, #90e8b8);
+      border-color: rgba(126, 214, 163, 0.8);
+      color: #1a5a3e;
+    }
+
+    .quiz-btn.incorrect {
+      background: linear-gradient(135deg, #ffc9c9, #ffaaaa);
+      border-color: rgba(255, 106, 146, 0.6);
+      color: #8b2e2e;
+    }
+
+    /* WIN SCREEN */
     .win-screen {
       position: absolute;
       inset: 0;
       display: grid;
       place-items: center;
-      background: rgba(255,255,255,0.82);
+      background: rgba(255,255,255,0.92);
       border-radius: 28px;
       opacity: 0;
       pointer-events: none;
@@ -227,6 +437,14 @@
       box-shadow: 0 12px 24px rgba(255, 106, 146, 0.2);
     }
 
+    .game-section {
+      display: none;
+    }
+
+    .game-section.active {
+      display: block;
+    }
+
     @media (max-width: 620px) {
       .scene {
         padding: 18px 14px 12px;
@@ -247,27 +465,94 @@
       .card-front {
         font-size: 1.8rem;
       }
+
+      .slot {
+        width: 80px;
+        height: 120px;
+        font-size: 2.8rem;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="scene">
-    <div class="topbar">
-      <h1>Love Garden</h1>
-      <div class="controls">
-        <div class="pill">Moves: <span id="moves">0</span></div>
-        <div class="pill timer">⏳ <span id="timer">75</span>s</div>
-        <button class="pill" id="restart" type="button">Restart</button>
+  <div class="main-container">
+    <div class="scene">
+      <div class="topbar">
+        <h1>💕 Love Garden</h1>
+        <div class="stats-bar">
+          <div class="pill gold">💰 <span id="totalCoins">0</span></div>
+          <button class="pill" id="restart" type="button">🔄 Reset All</button>
+        </div>
       </div>
-    </div>
 
-    <div class="board-wrap">
-      <div class="game-board" id="board"></div>
+      <div class="game-tabs">
+        <button class="tab-btn active" data-game="memory">🧠 Memory Match</button>
+        <button class="tab-btn" data-game="slots">🎰 Love Slots</button>
+        <button class="tab-btn" data-game="clicker">⚡ Speed Click</button>
+        <button class="tab-btn" data-game="quiz">💡 Romance Quiz</button>
+      </div>
+
+      <!-- MEMORY GAME -->
+      <div id="memory" class="game-section active">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+          <div class="pill">Moves: <span id="moves">0</span></div>
+          <div class="pill" style="color: var(--danger);">⏳ <span id="timer">75</span>s</div>
+        </div>
+        <div class="board-wrap">
+          <div class="game-board" id="board"></div>
+        </div>
+      </div>
+
+      <!-- SLOTS GAME -->
+      <div id="slots" class="game-section">
+        <div class="slots-container">
+          <p style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;">Match 3 to win! 🎁</p>
+          <div class="pill" style="display: inline-block;">Coin Balance: <span id="slotCoins">10</span></div>
+          <div class="slot-machine" id="slotMachine">
+            <div class="slot"><div class="slot-content">❤️</div></div>
+            <div class="slot"><div class="slot-content">💋</div></div>
+            <div class="slot"><div class="slot-content">🌹</div></div>
+          </div>
+          <button class="spin-btn" id="spinBtn">Spin (1 coin)</button>
+          <div class="slot-result" id="slotResult"></div>
+        </div>
+      </div>
+
+      <!-- CLICK GAME -->
+      <div id="clicker" class="game-section">
+        <div class="click-game-container">
+          <p style="font-size: 1.1rem; font-weight: 700;">Click as fast as you can in 10 seconds! ⚡</p>
+          <div class="pill" style="display: inline-block;">Time: <span id="clickTime">10</span>s</div>
+          <div class="click-target" id="clickTarget">💕</div>
+          <button class="spin-btn" id="startClickBtn">Start Clicking!</button>
+          <div class="click-stats">
+            <div>Clicks: <span id="clickCount">0</span></div>
+            <div>Coins Won: <span id="clickCoins">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUIZ GAME -->
+      <div id="quiz" class="game-section">
+        <div class="quiz-container">
+          <p style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">Answer love questions to earn coins! 💝</p>
+          <div id="quizContent"></div>
+        </div>
+      </div>
 
       <div class="win-screen" id="winScreen" aria-live="polite">
         <div class="win-box">
-          <h2 id="resultTitle">You made her smile 💖</h2>
-          <p id="resultText">Every memory matched. The garden is glowing again.</p>
+          <h2 id="resultTitle">Victory! 💖</h2>
+          <p id="resultText">You earned some coins!</p>
           <button id="playAgain" type="button">Play Again</button>
         </div>
       </div>
@@ -275,6 +560,12 @@
   </div>
 
   <script>
+    // GLOBAL STATE
+    let gameState = {
+      totalCoins: 0,
+      currentGame: 'memory'
+    };
+
     const symbols = [
       { emoji: "🌹", label: "Rose" },
       { emoji: "💖", label: "Love" },
@@ -286,15 +577,34 @@
       { emoji: "🌻", label: "Sunflower" }
     ];
 
-    const board = document.getElementById("board");
-    const movesEl = document.getElementById("moves");
-    const timerEl = document.getElementById("timer");
-    const winScreen = document.getElementById("winScreen");
-    const resultTitle = document.getElementById("resultTitle");
-    const resultText = document.getElementById("resultText");
-    const restartBtn = document.getElementById("restart");
-    const playAgainBtn = document.getElementById("playAgain");
+    const quizQuestions = [
+      { q: "What's the best way to express love?", answers: ["Thoughtfulness", "Cooking", "Time together", "Surprises"], correct: 0 },
+      { q: "Favorite romantic movie genre?", answers: ["Drama", "Comedy", "Adventure", "Any with you"], correct: 3 },
+      { q: "Perfect date night activity?", answers: ["Dinner", "Movies", "Walks", "Your choice wins"], correct: 3 },
+      { q: "Best love language?", answers: ["Words", "Acts", "Gifts", "Quality time"], correct: 1 },
+      { q: "What makes love last?", answers: ["Effort", "Trust", "Communication", "All of above"], correct: 3 },
+      { q: "Sweetest romantic gesture?", answers: ["Flowers", "Notes", "Hugs", "Showing up"], correct: 3 }
+    ];
 
+    // TAB SWITCHING
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.game-section').forEach(s => s.classList.remove('active'));
+        e.target.classList.add('active');
+        const game = e.target.dataset.game;
+        gameState.currentGame = game;
+        document.getElementById(game).classList.add('active');
+        if (game === 'quiz') initQuiz();
+      });
+    });
+
+    // UPDATE TOTAL COINS DISPLAY
+    function updateCoinDisplay() {
+      document.getElementById('totalCoins').textContent = gameState.totalCoins;
+    }
+
+    // ==================== MEMORY GAME ====================
     let deck = [];
     let firstCard = null;
     let secondCard = null;
@@ -313,7 +623,7 @@
       return copy;
     }
 
-    function createDeck() {
+    function createMemoryDeck() {
       deck = shuffle([...symbols, ...symbols]).map((item, index) => ({
         ...item,
         id: index
@@ -321,6 +631,7 @@
     }
 
     function buildBoard() {
+      const board = document.getElementById("board");
       board.innerHTML = "";
       deck.forEach((item) => {
         const card = document.createElement("button");
@@ -337,7 +648,6 @@
             </div>
           </div>
         `;
-
         card.addEventListener("click", () => flipCard(card));
         board.appendChild(card);
       });
@@ -357,7 +667,7 @@
 
       secondCard = card;
       moves++;
-      movesEl.textContent = moves;
+      document.getElementById("moves").textContent = moves;
 
       if (firstCard.dataset.name === secondCard.dataset.name) {
         firstCard.classList.add("matched");
@@ -367,7 +677,7 @@
         matches++;
 
         if (matches === symbols.length) {
-          endGame(true);
+          endMemoryGame(true);
         }
         return;
       }
@@ -382,50 +692,236 @@
       }, 700);
     }
 
-    function startTimer() {
+    function startMemoryTimer() {
       clearInterval(timerId);
       timerId = setInterval(() => {
         timeLeft--;
-        timerEl.textContent = timeLeft;
-
+        document.getElementById("timer").textContent = timeLeft;
         if (timeLeft <= 0) {
           clearInterval(timerId);
-          endGame(false);
+          endMemoryGame(false);
         }
       }, 1000);
     }
 
-    function endGame(won) {
+    function endMemoryGame(won) {
       clearInterval(timerId);
+      const winScreen = document.getElementById("winScreen");
+      const resultTitle = document.getElementById("resultTitle");
+      const resultText = document.getElementById("resultText");
       winScreen.classList.add("visible");
+
+      let coinsEarned = 0;
       if (won) {
-        resultTitle.textContent = "Garden of love complete 💖";
-        resultText.textContent = `You matched every bloom in ${moves} moves. The whole garden is glowing for you two.`;
+        coinsEarned = Math.max(10, 100 - moves * 2);
+        resultTitle.textContent = "Memory Master! 💖";
+        resultText.textContent = `Matched in ${moves} moves. You earned ${coinsEarned} coins!`;
       } else {
-        resultTitle.textContent = "A little more time for date night 🌙";
-        resultText.textContent = "You ran out of time, but the garden still remembers your love. Try again!";
+        coinsEarned = 5;
+        resultTitle.textContent = "Time's Up! ⏰";
+        resultText.textContent = `You earned 5 coins for trying. Play again!`;
       }
+
+      gameState.totalCoins += coinsEarned;
+      updateCoinDisplay();
     }
 
-    function resetGame() {
+    function resetMemoryGame() {
       firstCard = null;
       secondCard = null;
       lockBoard = false;
       moves = 0;
       matches = 0;
       timeLeft = 75;
-      movesEl.textContent = "0";
-      timerEl.textContent = "75";
-      winScreen.classList.remove("visible");
-      createDeck();
+      document.getElementById("moves").textContent = "0";
+      document.getElementById("timer").textContent = "75";
+      document.getElementById("winScreen").classList.remove("visible");
+      createMemoryDeck();
       buildBoard();
-      startTimer();
+      startMemoryTimer();
     }
 
-    restartBtn.addEventListener("click", resetGame);
-    playAgainBtn.addEventListener("click", resetGame);
+    // ==================== SLOTS GAME ====================
+    const slotSymbols = ['❤️', '💋', '🌹', '💐', '💝', '✨'];
+    let slotCoins = 10;
 
-    resetGame();
+    function updateSlotCoins() {
+      document.getElementById("slotCoins").textContent = slotCoins;
+    }
+
+    function spinSlots() {
+      const spinBtn = document.getElementById("spinBtn");
+      const slots = document.querySelectorAll('#slotMachine .slot');
+      const resultDiv = document.getElementById("slotResult");
+
+      if (slotCoins <= 0) {
+        resultDiv.textContent = "❌ No coins! Earn more by playing other games.";
+        return;
+      }
+
+      spinBtn.disabled = true;
+      slotCoins--;
+      updateSlotCoins();
+      resultDiv.textContent = "";
+
+      slots.forEach((slot, index) => {
+        slot.classList.add("spinning");
+        setTimeout(() => {
+          const randomSymbol = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+          slot.querySelector(".slot-content").textContent = randomSymbol;
+          slot.classList.remove("spinning");
+        }, 300 + index * 100);
+      });
+
+      setTimeout(() => {
+        const results = Array.from(slots).map(s => s.querySelector(".slot-content").textContent);
+        if (results[0] === results[1] && results[1] === results[2]) {
+          const coinsWon = 50;
+          slotCoins += coinsWon;
+          updateSlotCoins();
+          gameState.totalCoins += coinsWon;
+          updateCoinDisplay();
+          resultDiv.textContent = `🎉 JACKPOT! Won ${coinsWon} coins!`;
+        } else if (results[0] === results[1] || results[1] === results[2]) {
+          const coinsWon = 10;
+          slotCoins += coinsWon;
+          updateSlotCoins();
+          gameState.totalCoins += coinsWon;
+          updateCoinDisplay();
+          resultDiv.textContent = `✨ Partial match! Won ${coinsWon} coins!`;
+        } else {
+          resultDiv.textContent = "😢 No match. Try again!";
+        }
+        spinBtn.disabled = false;
+      }, 600);
+    }
+
+    // ==================== CLICKER GAME ====================
+    let clickCount = 0;
+    let clickTimeLeft = 10;
+    let clickerActive = false;
+    let clickTimerId = null;
+
+    function startClicker() {
+      clickCount = 0;
+      clickTimeLeft = 10;
+      clickerActive = true;
+      document.getElementById("startClickBtn").disabled = true;
+      document.getElementById("clickCount").textContent = "0";
+      document.getElementById("clickTime").textContent = "10";
+      document.getElementById("clickCoins").textContent = "0";
+
+      clickTimerId = setInterval(() => {
+        clickTimeLeft--;
+        document.getElementById("clickTime").textContent = clickTimeLeft;
+        if (clickTimeLeft <= 0) {
+          clearInterval(clickTimerId);
+          endClicker();
+        }
+      }, 1000);
+    }
+
+    function handleClick() {
+      if (!clickerActive) return;
+      clickCount++;
+      document.getElementById("clickCount").textContent = clickCount;
+      document.getElementById("clickTarget").classList.add("pulse");
+      setTimeout(() => {
+        document.getElementById("clickTarget").classList.remove("pulse");
+      }, 300);
+    }
+
+    function endClicker() {
+      clickerActive = false;
+      const coinsWon = Math.floor(clickCount / 2);
+      gameState.totalCoins += coinsWon;
+      updateCoinDisplay();
+      document.getElementById("clickCoins").textContent = coinsWon;
+      document.getElementById("startClickBtn").disabled = false;
+    }
+
+    // ==================== QUIZ GAME ====================
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+
+    function initQuiz() {
+      currentQuizIndex = 0;
+      quizScore = 0;
+      loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+      const quizContent = document.getElementById("quizContent");
+      if (currentQuizIndex >= quizQuestions.length) {
+        endQuiz();
+        return;
+      }
+
+      const q = quizQuestions[currentQuizIndex];
+      let html = `
+        <div class="quiz-question">
+          <h3>${q.q}</h3>
+          <div class="quiz-options">
+      `;
+
+      q.answers.forEach((answer, idx) => {
+        html += `<button class="quiz-btn" onclick="answerQuestion(${idx}, ${q.correct})">${answer}</button>`;
+      });
+
+      html += `</div></div>`;
+      quizContent.innerHTML = html;
+    }
+
+    function answerQuestion(selected, correct) {
+      const buttons = document.querySelectorAll(".quiz-btn");
+      buttons.forEach(b => b.disabled = true);
+
+      buttons[correct].classList.add("correct");
+      if (selected === correct) {
+        quizScore += 10;
+        buttons[selected].classList.add("correct");
+      } else {
+        buttons[selected].classList.add("incorrect");
+      }
+
+      setTimeout(() => {
+        currentQuizIndex++;
+        loadQuizQuestion();
+      }, 1000);
+    }
+
+    function endQuiz() {
+      gameState.totalCoins += quizScore;
+      updateCoinDisplay();
+      const winScreen = document.getElementById("winScreen");
+      const resultTitle = document.getElementById("resultTitle");
+      const resultText = document.getElementById("resultText");
+      winScreen.classList.add("visible");
+      resultTitle.textContent = "Quiz Complete! 💝";
+      resultText.textContent = `You earned ${quizScore} coins!`;
+    }
+
+    // ==================== INIT & EVENTS ====================
+    document.getElementById("startClickBtn").addEventListener("click", startClicker);
+    document.getElementById("clickTarget").addEventListener("click", handleClick);
+    document.getElementById("spinBtn").addEventListener("click", spinSlots);
+    document.getElementById("playAgain").addEventListener("click", () => {
+      document.getElementById("winScreen").classList.remove("visible");
+      if (gameState.currentGame === 'memory') resetMemoryGame();
+    });
+
+    document.getElementById("restart").addEventListener("click", () => {
+      if (confirm("Reset all progress and coins?")) {
+        gameState.totalCoins = 0;
+        slotCoins = 10;
+        updateCoinDisplay();
+        updateSlotCoins();
+        resetMemoryGame();
+      }
+    });
+
+    // Start memory game on load
+    resetMemoryGame();
   </script>
 </body>
 </html>
